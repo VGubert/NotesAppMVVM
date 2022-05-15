@@ -37,7 +37,10 @@ fun StartScreen(navController: NavHostController) {
             Text(text = "What will we use?")
             Button(
                 onClick = {
-                    mViewModel.initDatabase(TYPE_ROOM)
+                    mViewModel.initDatabase(TYPE_ROOM) {
+                        navController.navigate(route = NavRoute.Main.route)
+
+                    }
                     navController.navigate(route = NavRoute.Main.route)
                 },
                 modifier = Modifier
@@ -48,7 +51,9 @@ fun StartScreen(navController: NavHostController) {
             }
             Button(
                 onClick = {
-                    mViewModel.initDatabase(TYPE_DATABASE)
+                    mViewModel.initDatabase(TYPE_DATABASE) {
+                        navController.navigate(route = NavRoute.Main.route)
+                    }
                     navController.navigate(route = NavRoute.Main.route)
                 },
                 modifier = Modifier
