@@ -53,7 +53,7 @@ fun AddScreen(navController: NavHostController) {
                     navController.navigate(NavRoute.Main.route)
                 }
             ) {
-                Text(text = "ADd note")
+                Text(text = "Add note")
 
             }
         }
