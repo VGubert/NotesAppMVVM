@@ -29,14 +29,10 @@ import com.vgubert.notesappmvvm.MainViewModelFactory
 import com.vgubert.notesappmvvm.model.Note
 import com.vgubert.notesappmvvm.navigation.NavRoute
 import com.vgubert.notesappmvvm.ui.theme.NotesAppMVVMTheme
-import kotlinx.coroutines.MainScope
 
 @Composable
-fun MainScreen(navController: NavHostController) {
-    val context = LocalContext.current
-    val mViewModel: MainViewModel =
-        viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
-
+fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
+    val notes = viewModel.readAllNotes().observeAsState(listOf()).value
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -48,17 +44,12 @@ fun MainScreen(navController: NavHostController) {
             }
         }
     ) {
-//        Column () {
-//            NoteItem(title = "Note 1", subtitle = "Subtitle for note 1", navController = navController)
-//            NoteItem(title = "Note 2", subtitle = "Subtitle for note 2", navController = navController)
-//            NoteItem(title = "Note 3", subtitle = "Subtitle for note 3", navController = navController)
-//            NoteItem(title = "Note 4", subtitle = "Subtitle for note 4", navController = navController)
-//       }
-//        LazyColumn {
-//            items(notes) { note ->
-//                NoteItem(note = note, navController = navController)
-//            }
-//        }
+
+        LazyColumn {
+            items(notes) { note ->
+                NoteItem(note = note, navController = navController)
+            }
+        }
     }
 }
 
@@ -91,6 +82,9 @@ fun NoteItem(note: Note, navController: NavController) {
 @Composable
 fun prevMainScreen() {
     NotesAppMVVMTheme{
-        MainScreen(navController = rememberNavController())
+        val context = LocalContext.current
+        val mViewModel: MainViewModel =
+            viewModel(factory = MainViewModelFactory(context.applicationContext as Application))
+        MainScreen(navController = rememberNavController(), viewModel = mViewModel)
     }
 }
