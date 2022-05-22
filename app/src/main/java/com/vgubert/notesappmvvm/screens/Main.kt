@@ -29,6 +29,7 @@ import com.vgubert.notesappmvvm.MainViewModelFactory
 import com.vgubert.notesappmvvm.model.Note
 import com.vgubert.notesappmvvm.navigation.NavRoute
 import com.vgubert.notesappmvvm.ui.theme.NotesAppMVVMTheme
+import com.vgubert.notesappmvvm.utils.Constants.Keys.ADD_ICONS
 
 @Composable
 fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
@@ -39,7 +40,7 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
                 onClick = {
                     navController.navigate(NavRoute.Add.route)
                 }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Icons", tint = Color.White)
+                Icon(imageVector = Icons.Filled.Add, contentDescription = ADD_ICONS, tint = Color.White)
                 
             }
         }
@@ -60,7 +61,7 @@ fun NoteItem(note: Note, navController: NavController) {
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 24.dp)
             .clickable {
-                navController.navigate(NavRoute.Note.route)
+                navController.navigate(NavRoute.Note.route + "/${note.id}")
             },
         elevation = 6.dp
     ) {

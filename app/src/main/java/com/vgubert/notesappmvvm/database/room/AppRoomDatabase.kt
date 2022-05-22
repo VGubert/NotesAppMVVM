@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.vgubert.notesappmvvm.database.room.dao.NoteRoomDao
 import com.vgubert.notesappmvvm.model.Note
+import com.vgubert.notesappmvvm.utils.Constants.Keys.NOTE_DATABASE
 
 @Database(entities = [Note::class], version = 1)
 abstract class AppRoomDatabase  : RoomDatabase() {
@@ -22,7 +23,7 @@ abstract class AppRoomDatabase  : RoomDatabase() {
                 INSTANCE = Room.databaseBuilder(
                     context,
                     AppRoomDatabase::class.java,
-                    "note_database"
+                    NOTE_DATABASE
                 ).build()
                 INSTANCE as AppRoomDatabase
             } else INSTANCE as AppRoomDatabase
