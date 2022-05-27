@@ -28,7 +28,6 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = {
-                                ->
                                 Text(text = "Notes App")
                             },
                             backgroundColor = Color.Blue,
@@ -39,19 +38,16 @@ class MainActivity : ComponentActivity() {
                     content = {
                         Surface(
                             modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colors.background
+                            color =  MaterialTheme.colors.background
                         ) {
                             NotesNavHost(mViewModel)
                         }
                     }
                 )
-
-                }
+            }
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable

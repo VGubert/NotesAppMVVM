@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.vgubert.notesappmvvm.MainViewModel
@@ -29,7 +28,6 @@ import com.vgubert.notesappmvvm.MainViewModelFactory
 import com.vgubert.notesappmvvm.model.Note
 import com.vgubert.notesappmvvm.navigation.NavRoute
 import com.vgubert.notesappmvvm.ui.theme.NotesAppMVVMTheme
-import com.vgubert.notesappmvvm.utils.Constants.Keys.ADD_ICONS
 
 @Composable
 fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
@@ -40,12 +38,14 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
                 onClick = {
                     navController.navigate(NavRoute.Add.route)
                 }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = ADD_ICONS, tint = Color.White)
-                
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Add Icons",
+                    tint = Color.White
+                )
             }
         }
     ) {
-
         LazyColumn {
             items(notes) { note ->
                 NoteItem(note = note, navController = navController)
@@ -55,7 +55,7 @@ fun MainScreen(navController: NavHostController, viewModel: MainViewModel) {
 }
 
 @Composable
-fun NoteItem(note: Note, navController: NavController) {
+fun NoteItem(note: Note, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,7 +82,7 @@ fun NoteItem(note: Note, navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun prevMainScreen() {
-    NotesAppMVVMTheme{
+    NotesAppMVVMTheme {
         val context = LocalContext.current
         val mViewModel: MainViewModel =
             viewModel(factory = MainViewModelFactory(context.applicationContext as Application))

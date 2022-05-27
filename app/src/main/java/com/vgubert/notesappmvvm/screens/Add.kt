@@ -28,6 +28,7 @@ import com.vgubert.notesappmvvm.ui.theme.NotesAppMVVMTheme
 import com.vgubert.notesappmvvm.utils.Constants.Keys.ADD_NEW_NOTE
 import com.vgubert.notesappmvvm.utils.Constants.Keys.ADD_NOTE
 import com.vgubert.notesappmvvm.utils.Constants.Keys.NOTE_SUBTITLE
+import com.vgubert.notesappmvvm.utils.Constants.Keys.NOTE_TITLE
 
 @Composable
 fun AddScreen(navController: NavHostController, viewModel: MainViewModel) {
@@ -46,36 +47,34 @@ fun AddScreen(navController: NavHostController, viewModel: MainViewModel) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
-            
             OutlinedTextField(
                 value = title,
-                onValueChange = {
+                onValueChange =  {
                     title = it
                     isButtonEnabled = title.isNotEmpty() && subtitle.isNotEmpty()
-                                },
-                label = {  Text(text = NOTE_SUBTITLE) },
+                },
+                label = { Text(text = NOTE_TITLE) },
                 isError = title.isEmpty()
-                )
+            )
             OutlinedTextField(
                 value = subtitle,
-                onValueChange = {
+                onValueChange =  {
                     subtitle = it
                     isButtonEnabled = title.isNotEmpty() && subtitle.isNotEmpty()
-                                },
-                label = {  Text(text = NOTE_SUBTITLE) },
+                },
+                label = { Text(text = NOTE_SUBTITLE) },
                 isError = subtitle.isEmpty()
-                )
+            )
             Button(
                 modifier = Modifier.padding(top = 16.dp),
                 enabled = isButtonEnabled,
                 onClick = {
-                    viewModel.addNote(note = Note(title = title, subtitle = subtitle)) {
+                    viewModel.addNote(note =  Note(title = title, subtitle = subtitle)) {
                         navController.navigate(NavRoute.Main.route)
                     }
                 }
             ) {
                 Text(text = ADD_NOTE)
-
             }
         }
     }

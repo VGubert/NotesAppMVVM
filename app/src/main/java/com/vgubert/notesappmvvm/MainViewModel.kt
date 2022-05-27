@@ -3,6 +3,7 @@ package com.vgubert.notesappmvvm
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.vgubert.notesappmvvm.database.firebase.AppFirebaseRepository
 
 import com.vgubert.notesappmvvm.database.room.AppRoomDatabase
 import com.vgubert.notesappmvvm.database.room.repository.RoomRepository
@@ -17,13 +18,20 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
 
     val context = application
 
-    fun initDatabase(type: String, onSuccess: () -> Unit) {
+    fun initDatabase(type: String, onSuccess: ()-> Unit) {
         Log.d("checkData", "MainViewModel initDatabase with type: $type")
         when(type) {
             TYPE_ROOM -> {
                 val dao = AppRoomDatabase.getInstance(context = context).getRoomDao()
                 REPOSITORY = RoomRepository(dao)
                 onSuccess()
+            }
+            TYPE_FIREBASE -> {
+                REPOSITORY = AppFirebaseRepository()
+                REPOSITORY.connectToDatabase(
+                    { onSuccess() },
+                    { Log.d("checkData", "Error: ${it}")}
+                )
             }
         }
     }
@@ -39,9 +47,9 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     fun updateNote(note: Note, onSuccess: () -> Unit) {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             REPOSITORY.update(note = note) {
-                viewModelScope.launch (Dispatchers.Main) {
+                viewModelScope.launch(Dispatchers.Main) {
                     onSuccess()
                 }
             }
@@ -49,13 +57,12 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     fun deleteNote(note: Note, onSuccess: () -> Unit) {
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             REPOSITORY.delete(note = note) {
-                viewModelScope.launch (Dispatchers.Main) {
+                viewModelScope.launch(Dispatchers.Main) {
                     onSuccess()
                 }
             }
-
         }
     }
 
@@ -67,7 +74,7 @@ class MainViewModelFactory(private val application: Application) : ViewModelProv
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(application = application) as T
         }
-        throw IllegalAccessException("Unknown ViewModel Class")
+        throw  IllegalArgumentException("Unknown ViewModel Class")
     }
 
 }
