@@ -22,27 +22,28 @@ import com.vgubert.notesappmvvm.model.Note
 import com.vgubert.notesappmvvm.navigation.NavRoute
 import com.vgubert.notesappmvvm.ui.theme.NotesAppMVVMTheme
 import com.vgubert.notesappmvvm.utils.Constants
-import com.vgubert.notesappmvvm.utils.Constants.Keys.ADD_NEW_NOTE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.DELETE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.EDIT_NOTE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.EMPTY
-import com.vgubert.notesappmvvm.utils.Constants.Keys.NAV_BACK
-import com.vgubert.notesappmvvm.utils.Constants.Keys.NONE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.SUBTITLE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.TITLE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.UPDATE
-import com.vgubert.notesappmvvm.utils.Constants.Keys.UPDATE_NOTE
+import com.vgubert.notesappmvvm.utils.DB_TYPE
+import com.vgubert.notesappmvvm.utils.TYPE_FIREBASE
+import com.vgubert.notesappmvvm.utils.TYPE_ROOM
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NoteScreen(navController: NavHostController, viewModel: MainViewModel, noteId: String?) {
     val notes = viewModel.readAllNotes().observeAsState(listOf()).value
-    val note = notes.firstOrNull{ it.id == noteId?.toInt()} ?: Note(title = NONE, subtitle = NONE)
+    val note = when(DB_TYPE.value) {
+        TYPE_ROOM -> {
+            notes.firstOrNull { it.id == noteId?.toInt() } ?: Note()
+        }
+        TYPE_FIREBASE -> {
+            notes.firstOrNull { it.firebaseId == noteId } ?: Note()
+        }
+        else -> Note()
+    }
     val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-    var title by remember { mutableStateOf(EMPTY) }
-    var subtitle by remember { mutableStateOf(EMPTY) }
+    var title by remember { mutableStateOf(Constants.Keys.EMPTY)}
+    var subtitle by remember { mutableStateOf(Constants.Keys.EMPTY)}
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -56,35 +57,34 @@ fun NoteScreen(navController: NavHostController, viewModel: MainViewModel, noteI
                         .padding(all = 32.dp)
                 ) {
                     Text(
-                        text = EDIT_NOTE,
+                        text = Constants.Keys.EDIT_NOTE,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
                     OutlinedTextField(
                         value = title,
-                        onValueChange = { title = it},
-                        label = {Text(text = TITLE)},
+                        onValueChange = { title = it },
+                        label = { Text(text = Constants.Keys.TITLE) },
                         isError = title.isEmpty()
                     )
                     OutlinedTextField(
                         value = subtitle,
-                        onValueChange = { title = it},
-                        label = {Text(text = SUBTITLE)},
-                        isError = title.isEmpty()
+                        onValueChange = { subtitle = it },
+                        label = { Text(text = Constants.Keys.SUBTITLE) },
+                        isError = subtitle.isEmpty()
                     )
                     Button(
                         modifier = Modifier.padding(top = 16.dp),
                         onClick = {
                             viewModel.updateNote(note =
-                            Note(id = note.id, title = title, subtitle = subtitle)
+                            Note(id = note.id, title = title, subtitle = subtitle, firebaseId = note.firebaseId)
                             ) {
-                               navController.navigate(NavRoute.Main.route)
+                                navController.navigate(NavRoute.Main.route)
                             }
                         }
                     ) {
-                        Text(text = UPDATE_NOTE)
-
+                        Text(text = Constants.Keys.UPDATE_NOTE)
                     }
                 }
             }
@@ -102,7 +102,6 @@ fun NoteScreen(navController: NavHostController, viewModel: MainViewModel, noteI
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(32.dp)
-
                 ) {
                     Column(
                         modifier = Modifier.padding(vertical = 8.dp),
@@ -136,14 +135,14 @@ fun NoteScreen(navController: NavHostController, viewModel: MainViewModel, noteI
                             bottomSheetState.show()
                         }
                     }) {
-                        Text(text = UPDATE)
+                        Text(text = Constants.Keys.UPDATE)
                     }
                     Button(onClick = {
                         viewModel.deleteNote(note = note) {
                             navController.navigate(NavRoute.Main.route)
                         }
                     }) {
-                        Text(text = DELETE)
+                        Text(text = Constants.Keys.DELETE)
                     }
                 }
                 Button(
@@ -153,8 +152,9 @@ fun NoteScreen(navController: NavHostController, viewModel: MainViewModel, noteI
                         .fillMaxWidth(),
                     onClick = {
                         navController.navigate(NavRoute.Main.route)
-                    }) {
-                    Text(text = NAV_BACK)
+                    }
+                ) {
+                    Text(text = Constants.Keys.NAV_BACK)
                 }
             }
         }

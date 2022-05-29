@@ -26,7 +26,6 @@ import com.vgubert.notesappmvvm.utils.Constants.Keys.ROOM_DATABASE
 import com.vgubert.notesappmvvm.utils.Constants.Keys.WHAT_WILL_WE_USE
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StartScreen(navController: NavHostController, viewModel: MainViewModel) {
@@ -71,6 +70,7 @@ fun StartScreen(navController: NavHostController, viewModel: MainViewModel) {
                             LOGIN = login
                             PASSWORD = password
                             viewModel.initDatabase(TYPE_FIREBASE) {
+                                DB_TYPE.value = TYPE_FIREBASE
                                 navController.navigate(NavRoute.Main.route)
                             }
                         },
@@ -94,6 +94,7 @@ fun StartScreen(navController: NavHostController, viewModel: MainViewModel) {
                 Button(
                     onClick = {
                         viewModel.initDatabase(TYPE_ROOM) {
+                            DB_TYPE.value = TYPE_ROOM
                             navController.navigate(route = NavRoute.Main.route)
                         }
 

@@ -8,9 +8,7 @@ import com.vgubert.notesappmvvm.database.firebase.AppFirebaseRepository
 import com.vgubert.notesappmvvm.database.room.AppRoomDatabase
 import com.vgubert.notesappmvvm.database.room.repository.RoomRepository
 import com.vgubert.notesappmvvm.model.Note
-import com.vgubert.notesappmvvm.utils.REPOSITORY
-import com.vgubert.notesappmvvm.utils.TYPE_FIREBASE
-import com.vgubert.notesappmvvm.utils.TYPE_ROOM
+import com.vgubert.notesappmvvm.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -67,6 +65,18 @@ class MainViewModel (application: Application) : AndroidViewModel(application) {
     }
 
     fun readAllNotes() = REPOSITORY.readAll
+
+    fun signOut(onSuccess: () -> Unit) {
+        when(DB_TYPE.value) {
+            TYPE_FIREBASE,
+                TYPE_ROOM -> {
+                    REPOSITORY.signOut()
+                DB_TYPE.value = Constants.Keys.EMPTY
+                onSuccess()
+                }
+            else -> { Log.d("checkData", "signOut: ELSE: ${DB_TYPE}")}
+        }
+    }
 }
 
 class MainViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
